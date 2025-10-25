@@ -1,0 +1,35 @@
+{
+  "name": "travelplaner-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint src/**/*.js",
+    "start": "node ./src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tymur-lykho/TravelPlaner-back.git"
+  },
+  "keywords": [],
+  "author": "Tymur Lykho <tima.likho@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tymur-lykho/TravelPlaner-back/issues"
+  },
+  "homepage": "https://github.com/tymur-lykho/TravelPlaner-back#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "mongodb": "^6.20.0",
+    "mongoose": "^8.19.2",
+    "pino-http": "^11.0.0",
+    "pino-pretty": "^13.1.2"
+  }
+}
