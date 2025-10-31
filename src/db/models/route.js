@@ -17,8 +17,14 @@ export const routeSchema = new Schema(
     ],
     points: [
       {
-        type: Schema.Types.ObjectId,
-        ref: 'Point',
+        order: {
+          type: Number,
+          required: true,
+        },
+        point: {
+          type: Schema.Types.ObjectId,
+          ref: 'Point',
+        },
       },
     ],
     time: {

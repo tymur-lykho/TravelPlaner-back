@@ -5,10 +5,6 @@ export const pointSchema = new Schema({
     type: String,
     required: true,
   },
-  order: {
-    type: Number,
-    required: true,
-  },
   photos: [
     {
       type: Schema.Types.ObjectId,
@@ -40,6 +36,11 @@ export const pointSchema = new Schema({
       ref: 'PointCategory',
     },
   ],
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
 });
 
 export const PointsCollection = model('Point', pointSchema);
