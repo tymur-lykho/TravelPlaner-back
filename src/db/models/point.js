@@ -37,6 +37,6 @@ export const pointSchema = new Schema({
   },
 });
 
-pointSchema.index({ latLng: '2dsphere' });
+pointSchema.index({ lngLat: '2dsphere' });
 
 export const PointsCollection = model('Point', pointSchema);

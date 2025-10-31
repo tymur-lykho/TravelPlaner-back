@@ -18,3 +18,7 @@ export const deletePointByIdController = async (req, res) => {
     message: 'Point has been deleted',
   });
 };
+
+export const getAllPointsController = async (req, res) => {
+  const { page, perPage } = parsePaginationParams(req.query);
+};
