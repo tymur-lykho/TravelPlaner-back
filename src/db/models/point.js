@@ -11,15 +11,9 @@ export const pointSchema = new Schema({
       ref: 'Photo',
     },
   ],
-  latLng: {
-    lat: {
-      type: String,
-      required: true,
-    },
-    lng: {
-      type: String,
-      required: true,
-    },
+  lngLat: {
+    type: { type: String, enum: ['Point'], required: true },
+    coordinates: { type: [Number], required: true },
   },
   description: {
     type: String,
@@ -42,5 +36,7 @@ export const pointSchema = new Schema({
     required: true,
   },
 });
+
+pointSchema.index({ latLng: '2dsphere' });
 
 export const PointsCollection = model('Point', pointSchema);

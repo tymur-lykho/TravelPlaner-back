@@ -2,7 +2,15 @@ import createHttpError from 'http-errors';
 import { PointsCollection } from '../db/models/point.js';
 
 export const addPoint = async (payload) => {
-  return await PointsCollection.create(payload);
+  const { latLng, ...rest } = payload;
+
+  return await PointsCollection.create({
+    ...rest,
+    lngLat: {
+      type: 'Point',
+      coordinates: [Number(latLng.lng), Number(latLng.lat)],
+    },
+  });
 };
 
 export const deletePointById = async (pointId, userId) => {
