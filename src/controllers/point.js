@@ -1,4 +1,6 @@
-import { addPoint, deletePointById } from '../services/point.js';
+import { addPoint, deletePointById, getAllPoints } from '../services/point.js';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parsePointParams } from '../utils/parsePointParams.js';
 
 export const addPointController = async (req, res) => {
   const point = await addPoint({ ...req.body, owner: req.user._id });
@@ -21,4 +23,13 @@ export const deletePointByIdController = async (req, res) => {
 
 export const getAllPointsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
+  const { category, name, coordinates } = parsePointParams(req.query);
+
+  const points = await getAllPoints(coordinates, category, name, page, perPage);
+
+  res.status(200).json({
+    status: 200,
+    message: 'dONE',
+    data: points,
+  });
 };

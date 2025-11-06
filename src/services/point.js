@@ -27,10 +27,7 @@ export const deletePointById = async (pointId, userId) => {
 };
 
 export const getAllPoints = async (
-  minLng,
-  minLat,
-  maxLng,
-  maxLat,
+  coordinates,
   category,
   search,
   page,
@@ -45,22 +42,38 @@ export const getAllPoints = async (
     filter.category = category;
   }
 
-  if (minLat && minLng && maxLat && maxLng) {
-    filter.latLng = {
-      $geoWithin: {
-        $box: [
-          [minLng, minLat],
-          [maxLng, maxLat],
-        ],
-      },
-    };
-  }
+  //!! if (
+  //   coordinates &&
+  //   coordinates.swLng &&
+  //   coordinates.swLat &&
+  //   coordinates.neLng &&
+  //   coordinates.neLat
+  // ) {
+  //   filter.latLng = {
+  //     $geoWithin: {
+  //       $geometry: {
+  //         type: 'Polygon',
+  //         coordinates: [
+  //           [
+  //             [coordinates.swLng, coordinates.swLat],
+  //             [coordinates.swLng, coordinates.neLat],
+  //             [coordinates.neLng, coordinates.neLat],
+  //             [coordinates.neLng, coordinates.swLat],
+  //             [coordinates.swLng, coordinates.swLat],
+  //           ],
+  //         ],
+  //       },
+  //     },
+  //   };
+  // }
 
   if (search) {
     filter.name = { $regex: search, $options: 'i' };
   }
 
-  const pointsQuery = await PointsCollection.find(filter).populate(category);
+  console.log(filter);
+
+  const pointsQuery = PointsCollection.find(filter); //.populate(category);
 
   const pointsCount = await PointsCollection.countDocuments(filter);
 

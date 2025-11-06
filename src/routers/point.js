@@ -6,6 +6,7 @@ import { addPointSchema } from '../validation/point.js';
 import {
   addPointController,
   deletePointByIdController,
+  getAllPointsController,
 } from '../controllers/point.js';
 import { authenticate } from '../middlewares/authenticate.js';
 
@@ -24,5 +25,7 @@ router.delete(
   isValidId('id'),
   ctrlWrapper(deletePointByIdController),
 );
+
+router.get('/', ctrlWrapper(getAllPointsController));
 
 export default router;
