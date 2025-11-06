@@ -42,30 +42,30 @@ export const getAllPoints = async (
     filter.category = category;
   }
 
-  //!! if (
-  //   coordinates &&
-  //   coordinates.swLng &&
-  //   coordinates.swLat &&
-  //   coordinates.neLng &&
-  //   coordinates.neLat
-  // ) {
-  //   filter.latLng = {
-  //     $geoWithin: {
-  //       $geometry: {
-  //         type: 'Polygon',
-  //         coordinates: [
-  //           [
-  //             [coordinates.swLng, coordinates.swLat],
-  //             [coordinates.swLng, coordinates.neLat],
-  //             [coordinates.neLng, coordinates.neLat],
-  //             [coordinates.neLng, coordinates.swLat],
-  //             [coordinates.swLng, coordinates.swLat],
-  //           ],
-  //         ],
-  //       },
-  //     },
-  //   };
-  // }
+  if (
+    coordinates &&
+    coordinates.swLng &&
+    coordinates.swLat &&
+    coordinates.neLng &&
+    coordinates.neLat
+  ) {
+    filter.lngLat = {
+      $geoWithin: {
+        $geometry: {
+          type: 'Polygon',
+          coordinates: [
+            [
+              [coordinates.swLng, coordinates.swLat],
+              [coordinates.swLng, coordinates.neLat],
+              [coordinates.neLng, coordinates.neLat],
+              [coordinates.neLng, coordinates.swLat],
+              [coordinates.swLng, coordinates.swLat],
+            ],
+          ],
+        },
+      },
+    };
+  }
 
   if (search) {
     filter.name = { $regex: search, $options: 'i' };
