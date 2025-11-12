@@ -1,4 +1,9 @@
-import { addPoint, deletePointById, getAllPoints } from '../services/point.js';
+import {
+  addPoint,
+  deletePointById,
+  getAllPoints,
+  updatePoint,
+} from '../services/point.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parsePointParams } from '../utils/parsePointParams.js';
 
@@ -52,5 +57,19 @@ export const getUserPointsController = async (req, res) => {
     status: 200,
     message: 'Points retrieved successfully',
     data: points,
+  });
+};
+
+export const updatePointController = async (req, res) => {
+  const point = await updatePoint({
+    ...req.body,
+    owner: req.user._id,
+    pointId: req.params.id,
+  });
+
+  res.status(201).json({
+    status: 201,
+    message: 'Point updated',
+    data: point,
   });
 };

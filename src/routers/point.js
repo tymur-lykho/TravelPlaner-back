@@ -2,12 +2,13 @@ import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { isValidId } from '../middlewares/isValidId.js';
-import { addPointSchema } from '../validation/point.js';
+import { addPointSchema, updatePointSchema } from '../validation/point.js';
 import {
   addPointController,
   deletePointByIdController,
   getAllPointsController,
   getUserPointsController,
+  updatePointController,
 } from '../controllers/point.js';
 import { authenticate } from '../middlewares/authenticate.js';
 
@@ -30,5 +31,13 @@ router.delete(
 router.get('/', ctrlWrapper(getAllPointsController));
 
 router.get('/my', authenticate, ctrlWrapper(getUserPointsController));
+
+router.patch(
+  '/:id',
+  authenticate,
+  isValidId('id'),
+  validateBody(updatePointSchema),
+  ctrlWrapper(updatePointController),
+);
 
 export default router;

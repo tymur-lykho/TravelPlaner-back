@@ -89,3 +89,16 @@ export const getAllPoints = async (
     ...paginationData,
   };
 };
+
+export const updatePoint = async (payload) => {
+  const filter = {
+    owner: payload.owner,
+    _id: payload.pointId,
+  };
+
+  const upadteData = await PointsCollection.updateOne(filter, payload);
+
+  const pointData = await PointsCollection.find(filter);
+
+  return { pointData, ...upadteData };
+};
