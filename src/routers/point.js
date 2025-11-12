@@ -7,6 +7,7 @@ import {
   addPointController,
   deletePointByIdController,
   getAllPointsController,
+  getUserPointsController,
 } from '../controllers/point.js';
 import { authenticate } from '../middlewares/authenticate.js';
 
@@ -27,5 +28,7 @@ router.delete(
 );
 
 router.get('/', ctrlWrapper(getAllPointsController));
+
+router.get('/my', authenticate, ctrlWrapper(getUserPointsController));
 
 export default router;

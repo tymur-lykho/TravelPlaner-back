@@ -29,7 +29,28 @@ export const getAllPointsController = async (req, res) => {
 
   res.status(200).json({
     status: 200,
-    message: 'dONE',
+    message: 'Points retrieved successfully',
+    data: points,
+  });
+};
+
+export const getUserPointsController = async (req, res) => {
+  const { page, perPage } = parsePaginationParams(req.query);
+  const { category, name, coordinates } = parsePointParams(req.query);
+  const userId = req.user._id;
+
+  const points = await getAllPoints(
+    coordinates,
+    category,
+    name,
+    page,
+    perPage,
+    userId,
+  );
+
+  res.status(200).json({
+    status: 200,
+    message: 'Points retrieved successfully',
     data: points,
   });
 };

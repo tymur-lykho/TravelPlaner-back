@@ -32,6 +32,7 @@ export const getAllPoints = async (
   search,
   page,
   perPage,
+  userId = undefined,
 ) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
@@ -71,9 +72,11 @@ export const getAllPoints = async (
     filter.name = { $regex: search, $options: 'i' };
   }
 
-  console.log(filter);
+  if (userId) {
+    filter.owner = userId;
+  }
 
-  const pointsQuery = PointsCollection.find(filter); //.populate(category);
+  const pointsQuery = PointsCollection.find(filter).populate(category);
 
   const pointsCount = await PointsCollection.countDocuments(filter);
 
