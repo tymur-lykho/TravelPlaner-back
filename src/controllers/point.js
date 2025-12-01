@@ -28,9 +28,16 @@ export const deletePointByIdController = async (req, res) => {
 
 export const getAllPointsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
-  const { category, name, coordinates } = parsePointParams(req.query);
+  const { category, name, coordinates, owner } = parsePointParams(req.query);
 
-  const points = await getAllPoints(coordinates, category, name, page, perPage);
+  const points = await getAllPoints({
+    coordinates,
+    category,
+    name,
+    page,
+    perPage,
+    owner,
+  });
 
   res.status(200).json({
     status: 200,

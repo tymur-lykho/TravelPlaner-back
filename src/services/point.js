@@ -1,6 +1,7 @@
 import createHttpError from 'http-errors';
 import { PointsCollection } from '../db/models/point.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import { UsersCollection } from '../db/models/user.js';
 
 export const addPoint = async (payload) => {
   const { latLng, ...rest } = payload;
@@ -26,14 +27,10 @@ export const deletePointById = async (pointId, userId) => {
   return await PointsCollection.deleteOne({ _id: pointId });
 };
 
-export const getAllPoints = async (
-  coordinates,
-  category,
-  search,
-  page,
-  perPage,
-  userId = undefined,
-) => {
+export const getAllPoints = async (payload) => {
+  const { coordinates, category, search, page, perPage, owner, userId, saved } =
+    payload;
+
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
@@ -72,8 +69,13 @@ export const getAllPoints = async (
     filter.name = { $regex: search, $options: 'i' };
   }
 
-  if (userId) {
-    filter.owner = userId;
+  if (owner) {
+    filter.owner = owner;
+  }
+
+  if (saved && userId) {
+    const user = await UsersCollection.findById(userId).select('savedPoints');
+    filter._id = { $in: user.savedPoints };
   }
 
   const pointsQuery = PointsCollection.find(filter).populate(category);
@@ -101,4 +103,21 @@ export const updatePoint = async (payload) => {
   const pointData = await PointsCollection.find(filter);
 
   return { pointData, ...upadteData };
+};
+
+export const addPointToFavorite = async (user, pointId) => {
+  const point = await PointsCollection.findById(pointId);
+
+  if (!point) throw createHttpError(404, 'Point is not defined');
+
+  const pointIsFavorite = user.savedPoints.some(
+    (point) => point._id.toString() === pointId.toString(),
+  );
+
+  if (!pointIsFavorite) {
+    user.savedPoints.push(pointId);
+    await user.save();
+  }
+
+  return user.savedPoints;
 };

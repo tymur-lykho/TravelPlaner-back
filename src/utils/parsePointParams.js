@@ -70,5 +70,7 @@ export const parsePointParams = (query) => {
       query.neLat,
       query.neLng,
     ),
+    userId: parseObjectId(query.userId),
+    owner: parseObjectId(query.owner),
   };
 };
