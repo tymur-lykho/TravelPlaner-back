@@ -2,6 +2,7 @@ import createHttpError from 'http-errors';
 import { PointsCollection } from '../db/models/point.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { UsersCollection } from '../db/models/user.js';
+import mongoose from 'mongoose';
 
 export const addPoint = async (payload) => {
   const { latLng, ...rest } = payload;
@@ -105,19 +106,18 @@ export const updatePoint = async (payload) => {
   return { pointData, ...upadteData };
 };
 
-export const addPointToFavorite = async (user, pointId) => {
+export const addPointToFavorite = async (userId, pointId) => {
   const point = await PointsCollection.findById(pointId);
 
   if (!point) throw createHttpError(404, 'Point is not defined');
 
-  const pointIsFavorite = user.savedPoints.some(
-    (point) => point._id.toString() === pointId.toString(),
-  );
+  return await UsersCollection.findByIdAndUpdate(userId, {
+    $addToSet: { savedPoints: pointId },
+  });
+};
 
-  if (!pointIsFavorite) {
-    user.savedPoints.push(pointId);
-    await user.save();
-  }
-
-  return user.savedPoints;
+export const deletePointFromFavoriteById = async (pointId, userId) => {
+  await UsersCollection.findByIdAndUpdate(userId, {
+    $pull: { savedPoints: pointId },
+  });
 };

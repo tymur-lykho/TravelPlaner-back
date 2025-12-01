@@ -4,6 +4,7 @@ import { isValidId } from '../middlewares/isValidId.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   addPointToFavoriteController,
+  deletePointFromFavoriteController,
   getUserFavoritePointsController,
 } from '../controllers/favoritePoint.js';
 
@@ -14,5 +15,11 @@ router.use(authenticate);
 router.post('/:id', isValidId('id'), ctrlWrapper(addPointToFavoriteController));
 
 router.get('/', ctrlWrapper(getUserFavoritePointsController));
+
+router.delete(
+  '/:id',
+  isValidId('id'),
+  ctrlWrapper(deletePointFromFavoriteController),
+);
 
 export default router;

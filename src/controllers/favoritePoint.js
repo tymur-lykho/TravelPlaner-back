@@ -1,4 +1,8 @@
-import { addPointToFavorite, getAllPoints } from '../services/point.js';
+import {
+  addPointToFavorite,
+  deletePointFromFavoriteById,
+  getAllPoints,
+} from '../services/point.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parsePointParams } from '../utils/parsePointParams.js';
 
@@ -36,5 +40,14 @@ export const getUserFavoritePointsController = async (req, res) => {
     status: 200,
     message: 'Saved points retrieved successfully',
     data: points,
+  });
+};
+
+export const deletePointFromFavoriteController = async (req, res) => {
+  await deletePointFromFavoriteById(req.params.id, req.user._id);
+
+  res.status(204).json({
+    status: 204,
+    message: 'Favorite point has been deleted',
   });
 };
