@@ -5,25 +5,15 @@ export const pointSchema = new Schema({
     type: String,
     required: true,
   },
-  order: {
-    type: Number,
-    required: true,
-  },
   photos: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Photo',
     },
   ],
-  latLng: {
-    lat: {
-      type: String,
-      required: true,
-    },
-    lng: {
-      type: String,
-      required: true,
-    },
+  lngLat: {
+    type: { type: String, enum: ['Point'], required: true },
+    coordinates: { type: [Number], required: true },
   },
   description: {
     type: String,
@@ -40,6 +30,13 @@ export const pointSchema = new Schema({
       ref: 'PointCategory',
     },
   ],
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
 });
+
+pointSchema.index({ lngLat: '2dsphere' });
 
 export const PointsCollection = model('Point', pointSchema);

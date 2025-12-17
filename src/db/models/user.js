@@ -27,6 +27,12 @@ export const userSchema = new Schema(
         ref: 'Point',
       },
     ],
+    userPoints: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Point',
+      },
+    ],
   },
   { timestamps: true, versionKey: false },
 );

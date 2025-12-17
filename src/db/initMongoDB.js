@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 import { getEnvVar } from '../utils/getEnvVar.js';
+import { PointsCollection } from './models/point.js';
 
 export const initMongoDB = async () => {
   try {
@@ -12,6 +13,9 @@ export const initMongoDB = async () => {
     await mongoose.connect(
       `mongodb+srv://${user}:${pwd}@${url}/${db}?retryWrites=true&w=majority`,
     );
+
+    await PointsCollection.syncIndexes();
+
     console.log('Mongo connection successfully established!');
   } catch (e) {
     console.log('Error while setting up mongo connection', e);
