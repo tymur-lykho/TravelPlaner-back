@@ -31,14 +31,22 @@ export const routeSchema = new Schema(
         point: {
           type: Schema.Types.ObjectId,
           ref: 'Point',
+          required: function () {
+            return this.type === 'reference';
+          },
         },
 
         customData: {
-          name: String,
-          description: String,
-          lngLat: {
-            type: { type: String, enum: ['Point'] },
-            coordinates: { type: [Number] },
+          type: {
+            name: String,
+            description: String,
+            lngLat: {
+              type: { type: String, enum: ['Point'] },
+              coordinates: { type: [Number] },
+            },
+          },
+          required: function () {
+            return this.type === 'custom';
           },
         },
       },

@@ -32,7 +32,7 @@ export const createRouteSchema = Joi.object({
   name: Joi.string().min(3).max(60).required(),
   description: Joi.string().allow('').max(500),
   steps: Joi.array()
-    .items(referenceStepSchema, customStepSchema)
+    .items(Joi.alternatives().try(referenceStepSchema, customStepSchema))
     .min(1)
     .required(),
   time: Joi.number().min(0),
