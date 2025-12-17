@@ -2,7 +2,6 @@ import createHttpError from 'http-errors';
 import { PointsCollection } from '../db/models/point.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { UsersCollection } from '../db/models/user.js';
-import mongoose from 'mongoose';
 
 export const addPoint = async (payload) => {
   const { latLng, ...rest } = payload;
@@ -11,7 +10,7 @@ export const addPoint = async (payload) => {
     ...rest,
     lngLat: {
       type: 'Point',
-      coordinates: [Number(latLng.lng), Number(latLng.lat)],
+      coordinates: [latLng.lng, latLng.lat],
     },
   });
 };
