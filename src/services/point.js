@@ -99,7 +99,9 @@ export const updatePoint = async (payload) => {
     _id: payload.pointId,
   };
 
-  const upadteData = await PointsCollection.updateOne(filter, payload);
+  const upadteData = await PointsCollection.updateOne(filter, {
+    $set: payload.data,
+  });
 
   const pointData = await PointsCollection.find(filter);
 
