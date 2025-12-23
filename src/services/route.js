@@ -1,9 +1,33 @@
-import createHttpError from 'http-errors';
+import { PointsCollection } from '../db/models/point.js';
 import { RoutesCollection } from '../db/models/route.js';
+import { calculateRoute } from '../utils/getDirectionsByGoogleAPI.js';
 
 export const addRoute = async (payload) => {
-  console.log(payload.steps);
   const { steps, ...rest } = payload;
+
+  console.log(steps);
+
+  const stepsForAPI = async (steps) =>
+    Promise.all(
+      steps.map(async (step) => {
+        if (step.type !== 'reference') {
+          return step.customData.latLng;
+        }
+
+        const pointData = await PointsCollection.findById(step.point);
+
+        const pointLngLat = {
+          lng: pointData.lngLat.coordinates[0],
+          lat: pointData.lngLat.coordinates[1],
+        };
+
+        return pointLngLat;
+      }),
+    );
+
+  const { polyline, distance, duration } = await calculateRoute(
+    await stepsForAPI(steps),
+  );
 
   const validSteps = payload.steps.map((step) => {
     if (step.type !== 'custom') return step;
@@ -26,6 +50,9 @@ export const addRoute = async (payload) => {
   return await RoutesCollection.create({
     ...rest,
     steps: validSteps,
+    length: distance,
+    time: duration,
+    polyline,
   });
 };
 

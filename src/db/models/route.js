@@ -61,6 +61,10 @@ export const routeSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    polyline: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true, versionKey: false },
 );
