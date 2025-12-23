@@ -26,14 +26,12 @@ export const deletePointById = async (pointId, userId) => {
   return await PointsCollection.deleteOne({ _id: pointId });
 };
 
-export const getAllPoints = async (
-  coordinates,
-  category,
-  search,
-  page,
-  perPage,
-  userId = undefined,
-) => {
+export const getAllPoints = async ({ filters, pagination, userId }) => {
+  const { page, perPage } = pagination;
+
+  console.log(filters);
+  const { category, coordinates, search } = filters;
+
   const limit = perPage;
   const skip = (page - 1) * perPage;
 

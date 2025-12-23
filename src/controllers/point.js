@@ -27,10 +27,10 @@ export const deletePointByIdController = async (req, res) => {
 };
 
 export const getAllPointsController = async (req, res) => {
-  const { page, perPage } = parsePaginationParams(req.query);
-  const { category, name, coordinates } = parsePointParams(req.query);
+  const pagination = parsePaginationParams(req.query);
+  const filters = parsePointParams(req.query);
 
-  const points = await getAllPoints(coordinates, category, name, page, perPage);
+  const points = await getAllPoints({ pagination, filters });
 
   res.status(200).json({
     status: 200,
@@ -40,18 +40,16 @@ export const getAllPointsController = async (req, res) => {
 };
 
 export const getUserPointsController = async (req, res) => {
-  const { page, perPage } = parsePaginationParams(req.query);
-  const { category, name, coordinates } = parsePointParams(req.query);
-  const userId = req.user._id;
+  const payload = {};
 
-  const points = await getAllPoints(
-    coordinates,
-    category,
-    name,
-    page,
-    perPage,
-    userId,
-  );
+  if (req.query) {
+    payload.pagination = parsePaginationParams(req.query);
+    payload.filters = parsePointParams(req.query);
+  }
+
+  payload.userId = req.user._id;
+
+  const points = await getAllPoints(payload);
 
   res.status(200).json({
     status: 200,
