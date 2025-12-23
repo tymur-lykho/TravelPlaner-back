@@ -31,9 +31,14 @@ export const addRoute = async (payload) => {
 
 export const updateRoute = async (payload) => {
   const filter = {
-    owner: payload.user,
+    owner: payload.owner,
     _id: payload.routeId,
   };
 
-  return await RoutesCollection.updateOne(filter, payload);
+  const updateData = await RoutesCollection.updateOne(filter, {
+    $set: payload.data,
+  });
+  const routeData = await RoutesCollection.find(filter);
+
+  return { routeData, ...updateData };
 };

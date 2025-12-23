@@ -12,9 +12,9 @@ export const addRouteController = async (req, res) => {
 
 export const updateRouteController = async (req, res) => {
   const route = await updateRoute({
-    ...req.body,
-    routeId: req.params._id,
-    owner: req.user.id,
+    data: req.body,
+    routeId: req.params.id,
+    owner: req.user._id,
   });
 
   res.status(201).json({
