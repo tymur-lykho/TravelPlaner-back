@@ -20,19 +20,15 @@ export const addPointToFavoriteController = async (req, res) => {
 };
 
 export const getUserFavoritePointsController = async (req, res) => {
-  const { page, perPage } = parsePaginationParams(req.query);
-  const { category, name, coordinates, owner } = parsePointParams(req.query);
+  const pagination = parsePaginationParams(req.query);
+  const filters = parsePointParams(req.query);
   const saved = true;
   const userId = req.user._id;
 
   const points = await getAllPoints({
-    coordinates,
-    category,
-    name,
-    page,
-    perPage,
+    pagination,
+    filters,
     saved,
-    owner,
     userId,
   });
 
