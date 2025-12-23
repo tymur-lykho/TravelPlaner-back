@@ -60,7 +60,7 @@ export const getUserPointsController = async (req, res) => {
 
 export const updatePointController = async (req, res) => {
   const point = await updatePoint({
-    ...req.body,
+    data: req.body,
     owner: req.user._id,
     pointId: req.params.id,
   });
