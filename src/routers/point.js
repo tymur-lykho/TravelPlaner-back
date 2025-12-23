@@ -11,14 +11,27 @@ import {
   updatePointController,
 } from '../controllers/point.js';
 import { authenticate } from '../middlewares/authenticate.js';
+import favoriteRouter from './favoritePoint.js';
 
 const router = Router();
+
+router.use('/favorites', favoriteRouter);
+
+router.get('/', ctrlWrapper(getAllPointsController));
 
 router.post(
   '/',
   authenticate,
   validateBody(addPointSchema),
   ctrlWrapper(addPointController),
+);
+
+router.patch(
+  '/:id',
+  authenticate,
+  isValidId('id'),
+  validateBody(updatePointSchema),
+  ctrlWrapper(updatePointController),
 );
 
 router.delete(
@@ -28,16 +41,6 @@ router.delete(
   ctrlWrapper(deletePointByIdController),
 );
 
-router.get('/', ctrlWrapper(getAllPointsController));
-
 router.get('/my', authenticate, ctrlWrapper(getUserPointsController));
-
-router.patch(
-  '/:id',
-  authenticate,
-  isValidId('id'),
-  validateBody(updatePointSchema),
-  ctrlWrapper(updatePointController),
-);
 
 export default router;
