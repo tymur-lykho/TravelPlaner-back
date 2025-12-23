@@ -27,10 +27,10 @@ export const deletePointById = async (pointId, userId) => {
   return await PointsCollection.deleteOne({ _id: pointId });
 };
 
-export const getAllPoints = async ({ filters, pagination, userId }) => {
+export const getAllPoints = async ({ filters, pagination, userId, saved }) => {
   const { page, perPage } = pagination;
 
-  const { category, coordinates, search } = filters;
+  const { category, coordinates, name, owner } = filters;
 
   const limit = perPage;
   const skip = (page - 1) * perPage;
@@ -66,8 +66,8 @@ export const getAllPoints = async ({ filters, pagination, userId }) => {
     };
   }
 
-  if (search) {
-    filter.name = { $regex: search, $options: 'i' };
+  if (name) {
+    filter.name = { $regex: name, $options: 'i' };
   }
 
   if (owner) {
