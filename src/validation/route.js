@@ -38,3 +38,8 @@ export const createRouteSchema = Joi.object({
   time: Joi.number().min(0),
   length: Joi.number().min(0),
 });
+
+export const updateRouteSchema = Joi.object({
+  name: Joi.string().min(3).max(60),
+  description: Joi.string().allow('').max(500),
+});

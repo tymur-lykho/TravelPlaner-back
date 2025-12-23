@@ -23,10 +23,17 @@ export const addRoute = async (payload) => {
     };
   });
 
-  console.log(validSteps);
-
   return await RoutesCollection.create({
     ...rest,
     steps: validSteps,
   });
+};
+
+export const updateRoute = async (payload) => {
+  const filter = {
+    owner: payload.user,
+    _id: payload.routeId,
+  };
+
+  return await RoutesCollection.updateOne(filter, payload);
 };
