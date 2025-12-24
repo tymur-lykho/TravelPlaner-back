@@ -3,7 +3,7 @@ import { getEnvVar } from './getEnvVar.js';
 
 const API_KEY = getEnvVar('GOOGLE_MAPS_API_KEY');
 
-export const calculateRoute = async (points) => {
+export const calculateRoute = async (points, mode) => {
   if (points.length < 2) {
     throw new Error('Route must contain at least 2 points');
   }
@@ -27,12 +27,10 @@ export const calculateRoute = async (points) => {
         destination,
         waypoints,
         key: API_KEY,
-        mode: 'walking', // або driving, bicycling
+        mode,
       },
     },
   );
-
-  console.log(response.data.routes[0].legs);
 
   const route = response.data.routes[0];
   if (!route) {
@@ -51,7 +49,39 @@ export const calculateRoute = async (points) => {
 
   return {
     polyline: route.overview_polyline.points,
-    distance: totalDistance, // meters
-    duration: totalDuration, // seconds
+    distance: totalDistance,
+    duration: totalDuration,
   };
+};
+
+export const stepsForAPI = async (steps) => {
+  const pointIds = steps
+    .filter((s) => s.type === 'reference')
+    .map((s) => s.point);
+
+  const pointsData = await PointsCollection.find({
+    _id: {
+      $in: pointIds,
+    },
+  });
+
+  const pointCoordinates = pointsData.map((p) => {
+    return {
+      lng: p.lngLat.coordinates[0],
+      lat: p.lngLat.coordinates[1],
+    };
+  });
+
+  let referenceCount = 0;
+  const resultSteps = [];
+
+  for (const step of steps) {
+    if (step.type === 'reference') {
+      resultSteps.push(pointCoordinates[referenceCount]);
+    } else {
+      resultSteps.push(step.customData.latLng);
+    }
+  }
+
+  return resultSteps;
 };

@@ -65,6 +65,10 @@ export const routeSchema = new Schema(
       type: String,
       required: true,
     },
+    mode: {
+      type: String,
+      enum: ['bicycling', 'walking', 'driving'],
+    },
   },
   { timestamps: true, versionKey: false },
 );

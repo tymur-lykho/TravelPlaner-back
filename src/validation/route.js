@@ -35,8 +35,7 @@ export const createRouteSchema = Joi.object({
     .items(Joi.alternatives().try(referenceStepSchema, customStepSchema))
     .min(1)
     .required(),
-  time: Joi.number().min(0),
-  length: Joi.number().min(0),
+  mode: Joi.string().valid('walking', 'driving', 'bicycling'),
 });
 
 export const updateRouteSchema = Joi.object({

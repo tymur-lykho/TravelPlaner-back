@@ -1,29 +1,12 @@
 import { PointsCollection } from '../db/models/point.js';
 import { RoutesCollection } from '../db/models/route.js';
-import { calculateRoute } from '../utils/getDirectionsByGoogleAPI.js';
+import {
+  calculateRoute,
+  stepsForAPI,
+} from '../utils/getDirectionsByGoogleAPI.js';
 
 export const addRoute = async (payload) => {
-  const { steps, ...rest } = payload;
-
-  console.log(steps);
-
-  const stepsForAPI = async (steps) =>
-    Promise.all(
-      steps.map(async (step) => {
-        if (step.type !== 'reference') {
-          return step.customData.latLng;
-        }
-
-        const pointData = await PointsCollection.findById(step.point);
-
-        const pointLngLat = {
-          lng: pointData.lngLat.coordinates[0],
-          lat: pointData.lngLat.coordinates[1],
-        };
-
-        return pointLngLat;
-      }),
-    );
+  const { steps, mode, ...rest } = payload;
 
   const { polyline, distance, duration } = await calculateRoute(
     await stepsForAPI(steps),
@@ -53,6 +36,7 @@ export const addRoute = async (payload) => {
     length: distance,
     time: duration,
     polyline,
+    mode,
   });
 };
 
