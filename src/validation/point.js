@@ -23,7 +23,6 @@ export const geoLatLngSchema = Joi.object().keys({
 
 export const addPointSchema = Joi.object({
   name: Joi.string().min(3).max(60).required(),
-  photos: Joi.array().items(photo),
   latLng: geoLatLngSchema.required(),
   description: Joi.string().max(500),
   categories: Joi.array().items(category),
@@ -31,7 +30,6 @@ export const addPointSchema = Joi.object({
 
 export const updatePointSchema = Joi.object({
   name: Joi.string().min(3).max(60),
-  photos: Joi.array().items(photo),
   description: Joi.string().max(500),
   categories: Joi.array().items(category),
 });
