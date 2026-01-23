@@ -5,17 +5,18 @@ import {
   uploadPhotos,
 } from '../services/photo.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parsePhotoParams } from '../utils/parsePhotoParams.js';
 
 export const addPhotosController = async (req, res) => {
   const photos = req.files;
 
   const owner = req.user._id;
-  const targetId = req.params.id;
-  const targetType = req.baseUrl.slice(1, -1);
+
+  const { target, targetType } = parsePhotoParams(req.query);
 
   const result = await uploadPhotos({
     files: photos,
-    targetId,
+    target,
     targetType,
     owner,
   });
@@ -28,10 +29,10 @@ export const addPhotosController = async (req, res) => {
 };
 
 export const getPhotosController = async (req, res) => {
-  const targetId = req.params.id;
+  const { target } = parsePhotoParams(req.query);
   const { page, perPage } = parsePaginationParams(req.query);
 
-  const photos = await getPhotos(targetId, page, perPage);
+  const photos = await getPhotos(target, page, perPage);
 
   res.status(200).json({
     status: 200,
@@ -50,7 +51,8 @@ export const deletePhotoByIdController = async (req, res) => {
 };
 
 export const deletePhotosByTargetController = async (req, res) => {
-  await deletePhotosByTarget(req.params.id, req.user._id);
+  const { target } = parsePhotoParams(req.query);
+  await deletePhotosByTarget(target, req.user._id);
 
   res.status(204).json({
     status: 204,

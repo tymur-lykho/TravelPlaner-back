@@ -19,6 +19,6 @@ router.post(
 
 router.get('/', ctrlWrapper(getPhotosController));
 
-router.delete('/', ctrlWrapper(deletePhotosByTargetController));
+router.delete('/', authenticate, ctrlWrapper(deletePhotosByTargetController));
 
 export default router;

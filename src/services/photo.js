@@ -2,11 +2,11 @@ import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 import { PhotosCollection } from '../db/models/photo.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
-export const uploadPhotos = async ({ files, targetId, targetType, owner }) => {
+export const uploadPhotos = async ({ files, target, targetType, owner }) => {
   const photos = await Promise.all(
     files.map(async (file) => ({
       url: await saveFileToUploadDir(file),
-      target: targetId,
+      target,
       owner,
       targetType,
     })),
@@ -41,10 +41,10 @@ export const deletePhotosByTarget = async (targetId, ownerId) => {
   });
 };
 
-export const getPhotos = async (targetId, page, perPage) => {
+export const getPhotos = async (target, page, perPage) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
-  const filter = { target: targetId };
+  const filter = { target: target };
 
   const photosQuery = PhotosCollection.find(filter);
 
