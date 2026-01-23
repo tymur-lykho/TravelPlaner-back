@@ -1,7 +1,7 @@
 import createHttpError from 'http-errors';
 import { PointsCollection } from '../db/models/point.js';
-import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { UsersCollection } from '../db/models/user.js';
+import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
 export const addPoint = async (payload) => {
   const { latLng, ...rest } = payload;
@@ -98,11 +98,11 @@ export const updatePoint = async (payload) => {
     _id: payload.pointId,
   };
 
-  const upadteData = await PointsCollection.updateOne(filter, payload);
+  const updateData = await PointsCollection.updateOne(filter, payload);
 
   const pointData = await PointsCollection.find(filter);
 
-  return { pointData, ...upadteData };
+  return { pointData, ...updateData };
 };
 
 export const addPointToFavorite = async (userId, pointId) => {

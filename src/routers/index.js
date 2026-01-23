@@ -11,4 +11,6 @@ router.use('/points', pointRouter);
 
 router.use('/route', routeRouter);
 
+// router.use('/photos');
+
 export default router;
