@@ -1,4 +1,4 @@
-import { parsePaginationParams } from '../utils/parsePaginationParams';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 
 export const getUsersController = async (req, res) => {
   // const { name } = parseUserParams(req.query);

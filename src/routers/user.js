@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { authenticate } from '../middlewares/authenticate';
-import { ctrlWrapper } from '../utils/ctrlWrapper';
-import { validateBody } from '../middlewares/validateBody';
-import { isValidId } from '../middlewares/isValidId';
+import { authenticate } from '../middlewares/authenticate.js';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+import { validateBody } from '../middlewares/validateBody.js';
+import { isValidId } from '../middlewares/isValidId.js';
 import { upload } from '../middlewares/multer.js';
+import { getUsersController } from '../controllers/user.js';
 
 const router = Router();
 

@@ -1,7 +1,7 @@
 import createHttpError from 'http-errors';
 import { PointsCollection } from '../db/models/point.js';
 import { UsersCollection } from '../db/models/user.js';
-import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import { paginateCollection } from '../utils/paginateCollection.js';
 
 export const addPoint = async (payload) => {
   const { latLng, ...rest } = payload;
@@ -30,9 +30,6 @@ export const deletePointById = async (pointId, userId) => {
 export const getAllPoints = async (payload) => {
   const { coordinates, category, search, page, perPage, owner, userId, saved } =
     payload;
-
-  const limit = perPage;
-  const skip = (page - 1) * perPage;
 
   const filter = {};
 
@@ -78,16 +75,16 @@ export const getAllPoints = async (payload) => {
     filter._id = { $in: user.savedPoints };
   }
 
-  const pointsQuery = PointsCollection.find(filter).populate(category);
-
-  const pointsCount = await PointsCollection.countDocuments(filter);
-
-  const points = await pointsQuery.skip(skip).limit(limit).exec();
-
-  const paginationData = calculatePaginationData(pointsCount, perPage, page);
+  const { data, paginationData } = await paginateCollection({
+    collection: PointsCollection,
+    populateBy: category,
+    filter,
+    perPage,
+    page,
+  });
 
   return {
-    data: points,
+    points: data,
     ...paginationData,
   };
 };

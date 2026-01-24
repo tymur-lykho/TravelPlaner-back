@@ -3,6 +3,7 @@ import authRouter from './auth.js';
 import pointRouter from './point.js';
 import routeRouter from './route.js';
 import photoRouter from './photo.js';
+import userRouter from './user.js';
 
 const router = Router();
 
