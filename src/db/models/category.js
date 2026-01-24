@@ -20,4 +20,4 @@ export const categorySchema = new Schema({
 
 categorySchema.index({ slug: 1 });
 
-export const categoriesCollection = model('Category', categorySchema);
+export const CategoriesCollection = model('Category', categorySchema);

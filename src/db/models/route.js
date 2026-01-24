@@ -15,10 +15,12 @@ export const routeSchema = new Schema(
         ref: 'Comment',
       },
     ],
-    categories: {
-      type: Schema.Types.ObjectId,
-      ref: 'Category',
-    },
+    categories: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Category',
+      },
+    ],
     steps: [
       {
         type: {

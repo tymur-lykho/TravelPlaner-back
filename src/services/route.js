@@ -2,7 +2,6 @@ import createHttpError from 'http-errors';
 import { RoutesCollection } from '../db/models/route.js';
 
 export const addRoute = async (payload) => {
-  console.log(payload.steps);
   const { steps, ...rest } = payload;
 
   const validSteps = payload.steps.map((step) => {
