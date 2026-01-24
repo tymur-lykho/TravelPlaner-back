@@ -1,23 +1,6 @@
-import mongoose from 'mongoose';
 import createHttpError from 'http-errors';
-
-function parseObjectId(val) {
-  if (!val) return undefined;
-
-  if (!mongoose.Types.ObjectId.isValid(val)) return undefined;
-
-  return val;
-}
-
-function parseString(str) {
-  if (!str || typeof str !== 'string') return undefined;
-
-  const trimmedStr = str.trim();
-
-  if (trimmedStr === '') return undefined;
-
-  return str;
-}
+import { parseObjectId } from './parseObjectId.js';
+import { parseString } from './parseString.js';
 
 function parseSearchArea(swLat, swLng, neLat, neLng) {
   if ([swLng, swLat, neLng, neLat].some((v) => v === undefined)) {
@@ -30,8 +13,6 @@ function parseSearchArea(swLat, swLng, neLat, neLng) {
     neLat: parseFloat(neLat),
     neLng: parseFloat(neLng),
   };
-
-  console.log(coords);
 
   if (Object.values(coords).some((v) => v === Number.isNaN(v))) {
     throw createHttpError(400, 'All coordinates must be valid numbers');

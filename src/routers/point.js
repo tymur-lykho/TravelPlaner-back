@@ -12,6 +12,7 @@ import {
 } from '../controllers/point.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import favoriteRouter from './favoritePoint.js';
+import photoRouter from './photo.js';
 
 const router = Router();
 
@@ -40,6 +41,8 @@ router.delete(
   isValidId('id'),
   ctrlWrapper(deletePointByIdController),
 );
+
+router.use('/:id/photos', isValidId('id'), photoRouter);
 
 router.get('/my', authenticate, ctrlWrapper(getUserPointsController));
 

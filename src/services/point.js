@@ -1,7 +1,7 @@
 import createHttpError from 'http-errors';
 import { PointsCollection } from '../db/models/point.js';
-import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { UsersCollection } from '../db/models/user.js';
+import { paginateCollection } from '../utils/paginateCollection.js';
 
 export const addPoint = async (payload) => {
   const { latLng, ...rest } = payload;
@@ -27,12 +27,10 @@ export const deletePointById = async (pointId, userId) => {
   return await PointsCollection.deleteOne({ _id: pointId });
 };
 
-export const getAllPoints = async (payload) => {
-  const { coordinates, category, search, page, perPage, owner, userId, saved } =
-    payload;
+export const getAllPoints = async ({ filters, pagination, userId, saved }) => {
+  const { page, perPage } = pagination;
 
-  const limit = perPage;
-  const skip = (page - 1) * perPage;
+  const { category, coordinates, name, owner } = filters;
 
   const filter = {};
 
@@ -65,8 +63,8 @@ export const getAllPoints = async (payload) => {
     };
   }
 
-  if (search) {
-    filter.name = { $regex: search, $options: 'i' };
+  if (name) {
+    filter.name = { $regex: name, $options: 'i' };
   }
 
   if (owner) {
@@ -78,16 +76,16 @@ export const getAllPoints = async (payload) => {
     filter._id = { $in: user.savedPoints };
   }
 
-  const pointsQuery = PointsCollection.find(filter).populate(category);
-
-  const pointsCount = await PointsCollection.countDocuments(filter);
-
-  const points = await pointsQuery.skip(skip).limit(limit).exec();
-
-  const paginationData = calculatePaginationData(pointsCount, perPage, page);
+  const { data, paginationData } = await paginateCollection({
+    collection: PointsCollection,
+    populateBy: category,
+    filter,
+    perPage,
+    page,
+  });
 
   return {
-    data: points,
+    points: data,
     ...paginationData,
   };
 };
@@ -98,11 +96,11 @@ export const updatePoint = async (payload) => {
     _id: payload.pointId,
   };
 
-  const upadteData = await PointsCollection.updateOne(filter, payload);
+  const updateData = await PointsCollection.updateOne(filter, payload);
 
   const pointData = await PointsCollection.find(filter);
 
-  return { pointData, ...upadteData };
+  return { pointData, ...updateData };
 };
 
 export const addPointToFavorite = async (userId, pointId) => {
