@@ -15,6 +15,10 @@ export const routeSchema = new Schema(
         ref: 'Comment',
       },
     ],
+    categories: {
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
+    },
     steps: [
       {
         type: {
@@ -66,5 +70,6 @@ export const routeSchema = new Schema(
 );
 
 routeSchema.index({ lngLat: '2dsphere' });
+routeSchema.index({ categories: 1 });
 
 export const RoutesCollection = model('Route', routeSchema);

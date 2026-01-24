@@ -27,7 +27,7 @@ export const pointSchema = new Schema({
   categories: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'PointCategory',
+      ref: 'Category',
     },
   ],
   owner: {
@@ -38,5 +38,6 @@ export const pointSchema = new Schema({
 });
 
 pointSchema.index({ lngLat: '2dsphere' });
+pointSchema.index({ categories: 1 });
 
 export const PointsCollection = model('Point', pointSchema);
