@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { UsersCollection } from '../db/models/user.js';
 import { paginateCollection } from '../utils/paginateCollection.js';
 import { uploadPhotos } from './photo.js';
