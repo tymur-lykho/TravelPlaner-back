@@ -4,28 +4,35 @@ import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { upload } from '../middlewares/multer.js';
-import { getUsersController } from '../controllers/user.js';
+import {
+  getMyUserController,
+  getUserByIdController,
+  getUsersController,
+  updateUserAvatarController,
+  updateUserController,
+} from '../controllers/user.js';
+import { updateUserSchema } from '../validation/user.js';
 
 const router = Router();
 
 router.get('/', ctrlWrapper(getUsersController));
 
-// router.get('/:id', isValidId('id'), ctrlWrapper(getUserById));
+router.get('/me', authenticate, ctrlWrapper(getMyUserController));
 
-router.use(authenticate);
+router.patch(
+  '/me',
+  authenticate,
+  validateBody(updateUserSchema),
+  ctrlWrapper(updateUserController),
+);
 
-// router.patch(
-//   '/:id',
-//   isValidId('id'),
-//   validateBody(updateUserSchema),
-//   ctrlWrapper(updateUserController),
-// );
+router.patch(
+  '/me/avatar',
+  authenticate,
+  upload.single('avatar'),
+  ctrlWrapper(updateUserAvatarController),
+);
 
-// router.patch(
-//   '/:id/avatar',
-//   isValidId('id'),
-//   upload.single('avatar'),
-//   ctrlWrapper(updateUserAvatarController),
-// );
+router.get('/:id', isValidId('id'), ctrlWrapper(getUserByIdController));
 
 export default router;

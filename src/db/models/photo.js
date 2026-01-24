@@ -20,7 +20,7 @@ export const photoSchema = new Schema(
     },
     targetType: {
       type: String,
-      enum: ['point', 'route'],
+      enum: ['point', 'route', 'user'],
       required: true,
     },
   },

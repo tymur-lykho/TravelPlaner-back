@@ -3,14 +3,25 @@ import { PhotosCollection } from '../db/models/photo.js';
 import { paginateCollection } from '../utils/paginateCollection.js';
 
 export const uploadPhotos = async ({ files, target, targetType, owner }) => {
-  const photos = await Promise.all(
-    files.map(async (file) => ({
-      url: await saveFileToUploadDir(file),
+  let photos;
+
+  if (Array.isArray(files)) {
+    photos = await Promise.all(
+      files.map(async (file) => ({
+        url: await saveFileToUploadDir(file),
+        target,
+        owner,
+        targetType,
+      })),
+    );
+  } else {
+    photos = {
+      url: await saveFileToUploadDir(files),
       target,
       owner,
       targetType,
-    })),
-  );
+    };
+  }
 
   return await PhotosCollection.create(photos);
 };
