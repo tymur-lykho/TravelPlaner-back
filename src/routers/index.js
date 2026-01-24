@@ -14,4 +14,6 @@ router.use('/route', routeRouter);
 
 router.use('/photos', photoRouter);
 
+router.use('/users', userRouter);
+
 export default router;
