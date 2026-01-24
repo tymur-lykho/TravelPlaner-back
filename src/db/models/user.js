@@ -33,6 +33,13 @@ export const userSchema = new Schema(
         ref: 'Point',
       },
     ],
+    description: {
+      type: String,
+    },
+    avatar: {
+      type: Schema.Types.ObjectId,
+      ref: 'Photo',
+    },
   },
   { timestamps: true, versionKey: false },
 );
