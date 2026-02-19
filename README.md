@@ -191,7 +191,3 @@ Please make sure your code passes linting (`npm run lint`) before submitting.
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 ---
-
-## 🔗 Related
-
-- [TravelPlaner Frontend](#) _(link to the frontend repo if available)_
