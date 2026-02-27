@@ -1,4 +1,3 @@
-import { PointsCollection } from '../db/models/point.js';
 import { RoutesCollection } from '../db/models/route.js';
 import {
   calculateRoute,

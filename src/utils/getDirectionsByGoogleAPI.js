@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getEnvVar } from './getEnvVar.js';
+import { PointsCollection } from '../db/models/point.js';
 
 const API_KEY = getEnvVar('GOOGLE_MAPS_API_KEY');
 
