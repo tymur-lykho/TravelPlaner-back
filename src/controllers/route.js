@@ -12,7 +12,7 @@ export const addRouteController = async (req, res) => {
 
 export const updateRouteController = async (req, res) => {
   const route = await updateRoute({
-    data: req.body,
+    ...req.body,
     routeId: req.params.id,
     owner: req.user._id,
   });

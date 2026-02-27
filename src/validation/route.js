@@ -9,7 +9,7 @@ const customStepSchema = Joi.object({
   customData: Joi.object({
     name: Joi.string().min(3).max(60),
     description: Joi.string().max(500).allow(''),
-    latLng: geoLatLngSchema.required(),
+    lngLat: geoLatLngSchema.required(),
   }).required(),
 });
 
@@ -33,4 +33,8 @@ export const createRouteSchema = Joi.object({
 export const updateRouteSchema = Joi.object({
   name: Joi.string().min(3).max(60),
   description: Joi.string().allow('').max(500),
+  steps: Joi.array()
+    .items(Joi.alternatives().try(referenceStepSchema, customStepSchema))
+    .min(1),
+  mode: Joi.string().valid('walking', 'driving', 'bicycling'),
 });

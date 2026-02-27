@@ -3,6 +3,7 @@ import {
   calculateRoute,
   stepsForAPI,
 } from '../utils/getDirectionsByGoogleAPI.js';
+import { validSteps } from '../utils/validSteps.js';
 
 export const addRoute = async (payload) => {
   const { steps, mode, ...rest } = payload;
@@ -11,27 +12,9 @@ export const addRoute = async (payload) => {
     await stepsForAPI(steps),
   );
 
-  const validSteps = payload.steps.map((step) => {
-    if (step.type !== 'custom') return step;
-
-    const { customData, ...restStepData } = step;
-    const { latLng, ...restCustomData } = customData;
-
-    return {
-      ...restStepData,
-      customData: {
-        ...restCustomData,
-        lngLat: {
-          type: 'Point',
-          coordinates: [latLng.lng, latLng.lat],
-        },
-      },
-    };
-  });
-
   return await RoutesCollection.create({
     ...rest,
-    steps: validSteps,
+    steps: validSteps(payload.steps),
     length: distance,
     time: duration,
     polyline,
@@ -45,10 +28,53 @@ export const updateRoute = async (payload) => {
     _id: payload.routeId,
   };
 
-  const updateData = await RoutesCollection.updateOne(filter, {
-    $set: payload.data,
+  console.log(filter);
+
+  const { steps, mode, ...rest } = payload;
+
+  const updateData = {
+    ...rest,
+  };
+
+  const oldRouteData = await RoutesCollection.findOne({ _id: filter._id });
+
+  console.log('Steps Old', oldRouteData.steps);
+
+  if (mode) {
+    const { polyline, distance, duration } = await calculateRoute(
+      await stepsForAPI(oldRouteData.steps),
+      mode,
+    );
+    updateData = {
+      ...updateData,
+      length: distance,
+      time: duration,
+      polyline,
+      mode,
+    };
+  }
+
+  if (steps) {
+    const { polyline, distance, duration } = await calculateRoute(
+      await stepsForAPI(steps),
+      oldRouteData.mode,
+    );
+    updateData = {
+      ...updateData,
+      steps: validSteps(steps),
+      length: distance,
+      time: duration,
+      polyline,
+    };
+  }
+
+  console.log(updateData);
+
+  const resultData = await RoutesCollection.updateOne(filter, {
+    $set: updateData,
   });
+
   const routeData = await RoutesCollection.find(filter);
 
-  return { routeData, ...updateData };
+  return { routeData, ...resultData };
 };

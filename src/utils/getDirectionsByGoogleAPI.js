@@ -20,6 +20,14 @@ export const calculateRoute = async (points, mode) => {
           .join('|')
       : undefined;
 
+  // console.log(
+  //   'Start: ',
+  //   origin,
+  //   '\nWaypoints: ',
+  //   waypoints,
+  //   '\nFinish: ',
+  //   destination,
+  // );
   const response = await axios.get(
     'https://maps.googleapis.com/maps/api/directions/json',
     {
@@ -60,11 +68,15 @@ export const stepsForAPI = async (steps) => {
     .filter((s) => s.type === 'reference')
     .map((s) => s.point);
 
+  // console.log('pointIds array: ', pointIds);
+
   const pointsData = await PointsCollection.find({
     _id: {
       $in: pointIds,
     },
   });
+
+  // console.log('pointsData ', pointsData);
 
   const pointCoordinates = pointsData.map((p) => {
     return {
@@ -73,16 +85,22 @@ export const stepsForAPI = async (steps) => {
     };
   });
 
+  // console.log('pointCoordinates ', pointCoordinates);
+
   let referenceCount = 0;
   const resultSteps = [];
 
   for (const step of steps) {
+    console.log(step, '\n\n');
     if (step.type === 'reference') {
       resultSteps.push(pointCoordinates[referenceCount]);
+      referenceCount += 1;
     } else {
-      resultSteps.push(step.customData.latLng);
+      resultSteps.push(step.customData.lngLat);
     }
   }
+
+  // console.log('resultStepsForAPI:\n', resultSteps);
 
   return resultSteps;
 };
