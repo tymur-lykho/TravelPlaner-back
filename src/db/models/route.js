@@ -67,6 +67,14 @@ export const routeSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    polyline: {
+      type: String,
+      required: true,
+    },
+    mode: {
+      type: String,
+      enum: ['bicycling', 'walking', 'driving'],
+    },
   },
   { timestamps: true, versionKey: false },
 );
