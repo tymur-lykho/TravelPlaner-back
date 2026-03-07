@@ -1,8 +1,8 @@
 import { parseObjectId } from './parseObjectId.js';
-import { parseString } from './parseString.js';
 import { parseSearchArea } from './parseSearchArea.js';
+import { parseString } from './parseString.js';
 
-export const parsePointParams = (query) => {
+export const parseRouteParams = (query) => {
   return {
     category: parseObjectId(query.category),
     name: parseString(query.name),

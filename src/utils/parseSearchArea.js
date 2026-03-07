@@ -1,0 +1,40 @@
+import createHttpError from 'http-errors';
+
+export const parseSearchArea = (swLat, swLng, neLat, neLng) => {
+  if ([swLng, swLat, neLng, neLat].some((v) => v === undefined)) {
+    return undefined;
+  }
+
+  const coords = {
+    swLat: parseFloat(swLat),
+    swLng: parseFloat(swLng),
+    neLat: parseFloat(neLat),
+    neLng: parseFloat(neLng),
+  };
+
+  if (Object.values(coords).some((v) => v === Number.isNaN(v))) {
+    throw createHttpError(400, 'All coordinates must be valid numbers');
+  }
+
+  if (
+    coords.swLng < -180 ||
+    coords.swLng > 180 ||
+    coords.neLng < -180 ||
+    coords.neLng > 180 ||
+    coords.swLat < -90 ||
+    coords.swLat > 90 ||
+    coords.neLat < -90 ||
+    coords.neLat > 90
+  ) {
+    throw createHttpError(400, 'Coordinates must be within valid Earth ranges');
+  }
+
+  if (coords.swLat >= coords.neLat || coords.swLng >= coords.neLng) {
+    throw createHttpError(
+      400,
+      'Invalid bounding box: southwest must be less than northeast',
+    );
+  }
+
+  return coords;
+};

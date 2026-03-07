@@ -5,6 +5,7 @@ import { createRouteSchema, updateRouteSchema } from '../validation/route.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   addRouteController,
+  getAllRoutesController,
   updateRouteController,
 } from '../controllers/route.js';
 import { isValidId } from '../middlewares/isValidId.js';
@@ -17,6 +18,8 @@ router.post(
   validateBody(createRouteSchema),
   ctrlWrapper(addRouteController),
 );
+
+router.get('/', ctrlWrapper(getAllRoutesController));
 
 router.patch(
   '/:id',

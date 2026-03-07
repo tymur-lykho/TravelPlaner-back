@@ -1,3 +1,4 @@
+import { PointsCollection } from '../db/models/point.js';
 import { RoutesCollection } from '../db/models/route.js';
 import {
   calculateRoute,
@@ -67,4 +68,78 @@ export const updateRoute = async (payload) => {
   const routeData = await RoutesCollection.find(filter);
 
   return { routeData, ...resultData };
+};
+
+export const getAllRoutes = async ({ filters, pagination }) => {
+  console.log('ALL ROUTES');
+  const { page, perPage } = pagination;
+  const { category, coordinates, name, owner } = filters;
+
+  const conditions = [];
+
+  const filter = { $or: conditions };
+
+  const baseFilter = {};
+
+  if (category) {
+    baseFilter.category = category;
+  }
+
+  if (name) {
+    baseFilter.name = { $regex: name, $options: 'i' };
+  }
+
+  if (owner) {
+    baseFilter.owner = owner;
+  }
+
+  if (
+    coordinates &&
+    coordinates.swLng &&
+    coordinates.swLat &&
+    coordinates.neLng &&
+    coordinates.neLat
+  ) {
+    const lngLat = {
+      $geoWithin: {
+        $geometry: {
+          type: 'Polygon',
+          coordinates: [
+            [
+              [coordinates.swLng, coordinates.swLat],
+              [coordinates.swLng, coordinates.neLat],
+              [coordinates.neLng, coordinates.neLat],
+              [coordinates.neLng, coordinates.swLat],
+              [coordinates.swLng, coordinates.swLat],
+            ],
+          ],
+        },
+      },
+    };
+
+    const pointsInViewPort = await PointsCollection.find({
+      lngLat,
+    }).select('_id');
+
+    const pointIdsInViewPort = pointsInViewPort.map((p) => p._id);
+
+    if (!pointIdsInViewPort.length) return [];
+    // throw createHttpError(404, 'Routes in viewport not found');
+
+    conditions.push({
+      steps: { $elemMatch: { point: { $in: pointIdsInViewPort } } },
+      ...baseFilter,
+    });
+
+    //!! conditions.push({
+    //   steps: { 'customData.lngLat': lngLat },
+    //   ...baseFilter,
+    // });
+  }
+
+  console.log(filter);
+
+  const routes = await RoutesCollection.find(filter);
+
+  return routes;
 };
