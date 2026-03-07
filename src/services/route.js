@@ -28,8 +28,6 @@ export const updateRoute = async (payload) => {
     _id: payload.routeId,
   };
 
-  console.log(filter);
-
   const { steps, mode, ...rest } = payload;
 
   const updateData = {
@@ -38,20 +36,15 @@ export const updateRoute = async (payload) => {
 
   const oldRouteData = await RoutesCollection.findOne({ _id: filter._id });
 
-  console.log('Steps Old', oldRouteData.steps);
-
   if (mode) {
     const { polyline, distance, duration } = await calculateRoute(
       await stepsForAPI(oldRouteData.steps),
       mode,
     );
-    updateData = {
-      ...updateData,
-      length: distance,
-      time: duration,
-      polyline,
-      mode,
-    };
+    updateData.length = distance;
+    updateData.time = duration;
+    updateData.polyline = polyline;
+    updateData.mode = mode;
   }
 
   if (steps) {
@@ -59,16 +52,13 @@ export const updateRoute = async (payload) => {
       await stepsForAPI(steps),
       oldRouteData.mode,
     );
-    updateData = {
-      ...updateData,
-      steps: validSteps(steps),
-      length: distance,
-      time: duration,
-      polyline,
-    };
+    updateData.steps = validSteps(steps);
+    updateData.length = distance;
+    updateData.time = duration;
+    updateData.polyline = polyline;
   }
 
-  console.log(updateData);
+  console.log('updateData: ', updateData);
 
   const resultData = await RoutesCollection.updateOne(filter, {
     $set: updateData,

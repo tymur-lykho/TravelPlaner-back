@@ -20,14 +20,14 @@ export const calculateRoute = async (points, mode) => {
           .join('|')
       : undefined;
 
-  // console.log(
-  //   'Start: ',
-  //   origin,
-  //   '\nWaypoints: ',
-  //   waypoints,
-  //   '\nFinish: ',
-  //   destination,
-  // );
+  console.log(
+    'Start: ',
+    origin,
+    '\nWaypoints: ',
+    waypoints,
+    '\nFinish: ',
+    destination,
+  );
   const response = await axios.get(
     'https://maps.googleapis.com/maps/api/directions/json',
     {
@@ -43,7 +43,7 @@ export const calculateRoute = async (points, mode) => {
 
   const route = response.data.routes[0];
   if (!route) {
-    throw new Error('Route not found');
+    throw new Error('Unable to route between given points');
   }
 
   const totalDistance = route.legs.reduce(
@@ -96,11 +96,16 @@ export const stepsForAPI = async (steps) => {
       resultSteps.push(pointCoordinates[referenceCount]);
       referenceCount += 1;
     } else {
-      resultSteps.push(step.customData.lngLat);
+      if (step.customData.lngLat.type) {
+        const { coordinates } = step.customData.lngLat;
+        resultSteps.push({ lng: coordinates[0], lat: coordinates[1] });
+      } else {
+        resultSteps.push(step.customData.lngLat);
+      }
     }
   }
 
-  // console.log('resultStepsForAPI:\n', resultSteps);
+  console.log('resultStepsForAPI:\n', resultSteps);
 
   return resultSteps;
 };

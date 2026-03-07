@@ -47,8 +47,8 @@ export const routeSchema = new Schema(
             name: String,
             description: String,
             lngLat: {
-              type: { type: String, enum: ['Point'] },
-              coordinates: { type: [Number] },
+              type: { type: String, enum: ['Point'], required: true },
+              coordinates: { type: [Number], required: true },
             },
           },
           required: function () {
